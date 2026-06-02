@@ -55,6 +55,35 @@ each with `herdr_agent_wait`, and merges their output with `herdr_agent_read`.
 Uses `herdr_pane_run` to kick off the run and `herdr_wait_output` to block on the
 result — so you're notified the moment it's done instead of babysitting the pane.
 
+### 4. Unblock a stuck agent
+
+An agent is sitting at a prompt waiting for confirmation (`blocked`) while you're
+heads-down in another pane.
+
+> "Is any agent blocked waiting on input? If Codex is stuck on a y/n prompt,
+> approve it so it can continue."
+
+`herdr_agent_list` surfaces the `blocked` state; `herdr_agent_send` +
+`herdr_pane_send_keys` answer the prompt — no context-switch on your part.
+
+### 5. Spec → implement → verify pipeline
+
+> "Take the plan in the *architect* agent's pane, give it to Claude to implement,
+> then have the *tester* agent run the suite against the result."
+
+Reads the spec with `herdr_agent_read`, hands it off with `herdr_agent_send`,
+waits with `herdr_agent_wait`, then triggers verification in a third agent — a
+three-stage relay driven by one instruction.
+
+### 6. Route a question to the agent that has the context
+
+> "The agent working in the payments service already has that code loaded — ask it
+> why the webhook retries, and bring me its answer."
+
+Instead of re-loading context yourself, `herdr_agent_send` poses the question to
+the agent already sitting in that codebase and `herdr_agent_read` returns its
+reply.
+
 The point: the agent-to-agent handoffs that used to need a human in the middle
 become one sentence.
 

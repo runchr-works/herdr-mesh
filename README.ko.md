@@ -115,6 +115,10 @@ npm i -g runchr-works/herdr-mesh
 herdr-mesh install
 ```
 
+> npm 레지스트리가 아니라 **GitHub에서 직접 설치**합니다. npm이 repo를 클론하고 `prepare`
+> 스크립트가 설치 시 빌드하므로 `git`, 네트워크, Node 툴체인이 필요합니다. 나중에 업데이트하려면
+> 같은 `npm i -g` 명령을 다시 실행하세요.
+
 `herdr-mesh install`은 설치된 에이전트를 감지하고, 선택한 에이전트에 herdr-mesh를 등록합니다:
 
 - **Claude Code** — `claude mcp add -s user`로 등록

@@ -122,6 +122,10 @@ npm i -g runchr-works/herdr-mesh
 herdr-mesh install
 ```
 
+> Installed straight from GitHub (not the npm registry). npm clones the repo and
+> its `prepare` script builds it on install, so you need `git`, network access,
+> and a Node toolchain. To update later, re-run the same `npm i -g` command.
+
 `herdr-mesh install` detects installed agents and registers herdr-mesh with the
 ones you pick:
 

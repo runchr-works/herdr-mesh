@@ -21,6 +21,14 @@
     "multi-agent",
     "orchestration"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/runchr-works/herdr-mesh.git"
+  },
+  "homepage": "https://github.com/runchr-works/herdr-mesh#readme",
+  "bugs": {
+    "url": "https://github.com/runchr-works/herdr-mesh/issues"
+  },
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",

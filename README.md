@@ -30,19 +30,33 @@ protocol implementation — herdr's own version/protocol handling stays authorit
 - [herdr](https://herdr.dev) installed and a server running (`herdr status` shows `running`).
   Set `HERDR_BIN` if `herdr` is not on `PATH`.
 
-## Install & build
+## Run with npx (recommended)
+
+No clone needed — run straight from GitHub. npx fetches the repo and its
+`prepare` script builds it automatically:
 
 ```bash
-npm install
-npm run build
+npx -y github:runchr-works/herdr-mesh
 ```
 
 ## Register with a client
 
+Each agent (claude/codex/…) is its own MCP client. Register herdr-mesh once per
+agent you use. All agents on the same machine share the same herdr socket, so
+they can see and message each other.
+
 Claude Code:
 
 ```bash
-claude mcp add herdr-mesh -- node /data/workspaces/herdr-mesh/dist/index.js
+claude mcp add herdr-mesh -- npx -y github:runchr-works/herdr-mesh
+```
+
+Codex (`~/.codex/config.toml`):
+
+```toml
+[mcp_servers.herdr-mesh]
+command = "npx"
+args = ["-y", "github:runchr-works/herdr-mesh"]
 ```
 
 Generic MCP config (stdio):
@@ -51,11 +65,21 @@ Generic MCP config (stdio):
 {
   "mcpServers": {
     "herdr-mesh": {
-      "command": "node",
-      "args": ["/data/workspaces/herdr-mesh/dist/index.js"]
+      "command": "npx",
+      "args": ["-y", "github:runchr-works/herdr-mesh"]
     }
   }
 }
+```
+
+## Build from source (local development)
+
+```bash
+git clone https://github.com/runchr-works/herdr-mesh.git
+cd herdr-mesh
+npm install
+npm run build
+# then register with: node /absolute/path/to/herdr-mesh/dist/index.js
 ```
 
 ## Tools

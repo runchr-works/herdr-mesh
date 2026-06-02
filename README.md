@@ -36,7 +36,7 @@ No clone needed — run straight from GitHub. npx fetches the repo and its
 `prepare` script builds it automatically:
 
 ```bash
-npx -y github:runchr-works/herdr-mesh
+npx -y runchr-works/herdr-mesh
 ```
 
 ## Register with a client
@@ -48,7 +48,7 @@ they can see and message each other.
 Claude Code:
 
 ```bash
-claude mcp add herdr-mesh -- npx -y github:runchr-works/herdr-mesh
+claude mcp add herdr-mesh -- npx -y runchr-works/herdr-mesh
 ```
 
 Codex (`~/.codex/config.toml`):
@@ -56,7 +56,7 @@ Codex (`~/.codex/config.toml`):
 ```toml
 [mcp_servers.herdr-mesh]
 command = "npx"
-args = ["-y", "github:runchr-works/herdr-mesh"]
+args = ["-y", "runchr-works/herdr-mesh"]
 ```
 
 Generic MCP config (stdio):
@@ -66,7 +66,7 @@ Generic MCP config (stdio):
   "mcpServers": {
     "herdr-mesh": {
       "command": "npx",
-      "args": ["-y", "github:runchr-works/herdr-mesh"]
+      "args": ["-y", "runchr-works/herdr-mesh"]
     }
   }
 }

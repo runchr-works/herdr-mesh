@@ -36,7 +36,7 @@ MCP 클라이언트 ──stdio(MCP)──> herdr-mesh ──exec "herdr …"─
 빌드합니다:
 
 ```bash
-npx -y github:runchr-works/herdr-mesh
+npx -y runchr-works/herdr-mesh
 ```
 
 ## 클라이언트에 등록
@@ -48,7 +48,7 @@ herdr-mesh를 MCP 서버로 등록하세요. 같은 머신의 모든 에이전�
 Claude Code:
 
 ```bash
-claude mcp add herdr-mesh -- npx -y github:runchr-works/herdr-mesh
+claude mcp add herdr-mesh -- npx -y runchr-works/herdr-mesh
 ```
 
 Codex (`~/.codex/config.toml`):
@@ -56,7 +56,7 @@ Codex (`~/.codex/config.toml`):
 ```toml
 [mcp_servers.herdr-mesh]
 command = "npx"
-args = ["-y", "github:runchr-works/herdr-mesh"]
+args = ["-y", "runchr-works/herdr-mesh"]
 ```
 
 일반 MCP 설정(stdio):
@@ -66,7 +66,7 @@ args = ["-y", "github:runchr-works/herdr-mesh"]
   "mcpServers": {
     "herdr-mesh": {
       "command": "npx",
-      "args": ["-y", "github:runchr-works/herdr-mesh"]
+      "args": ["-y", "runchr-works/herdr-mesh"]
     }
   }
 }

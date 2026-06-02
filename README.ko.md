@@ -135,6 +135,12 @@ tool 이름을 직접 입력하지 않습니다. 평소처럼 에이전트(Claud
 에이전트가 `herdr_agent_start` → `herdr_agent_send` → `herdr_agent_wait` →
 `herdr_agent_read`를 알아서 연결해 실행합니다.
 
+**말할 때 알아두면 좋은 점**
+- 메시지를 **그냥 전달**할지, **실행/제출까지** 시킬지 분명히 말하세요 — 예: "전달만 해줘" vs
+  "보내고 실행까지 해줘". (전달만 하면 상대 입력칸에 글자만 들어가고 Enter는 안 눌립니다.)
+- 출력이 비어 보이면 "**지금 화면** 기준으로 보여줘"처럼 요청하세요. "최근 명령 출력"은
+  추적된 구간이 없으면 비어 있을 수 있습니다.
+
 ## Tool 목록 (LLM용 레퍼런스)
 
 아래는 에이전트에게 노출되는 tool 이름입니다 — 참고용이며, 사람이 입력하는 것이 아닙니다.
@@ -163,7 +169,10 @@ tool 이름을 직접 입력하지 않습니다. 평소처럼 에이전트(Claud
 - `herdr_tab_*` — list / create / get / focus / rename / close
 - `herdr_workspace_*` — list / create / get / focus / rename / close
 
-## 사용 팁
+## 동작 참고 (LLM·개발자용)
+
+아래는 tool의 동작 세부사항입니다 — 사람용 팁이 아니라, LLM이 tool을 올바르게 쓰거나
+개발자가 동작을 이해할 때 참고하는 내용입니다.
 
 - **메시지/명령 전송**
   - 글자만 전달: `herdr_agent_send` (Enter 누르지 않음)

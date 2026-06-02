@@ -138,6 +138,13 @@ A typical handoff, all from natural language:
 The agent chains `herdr_agent_start` → `herdr_agent_send` → `herdr_agent_wait` →
 `herdr_agent_read` on its own.
 
+**Good to know when phrasing requests**
+- Be explicit about whether you want a message just *delivered* vs *run/submitted*
+  — e.g. "just type it for them" vs "send it and run it". (Delivery only types
+  text into the other agent's input; it does not press Enter.)
+- If output looks empty, ask for it "based on what's **on screen** now". The
+  "recent command output" region can be empty when nothing has been tracked.
+
 ## Tools (reference for the LLM)
 
 These are the tool names exposed to the agent — listed here for reference, not for
@@ -166,6 +173,29 @@ you to type.
 **Tabs & workspaces**
 - `herdr_tab_*` — list / create / get / focus / rename / close
 - `herdr_workspace_*` — list / create / get / focus / rename / close
+
+## Behavior notes (for the LLM / developers)
+
+Tool-level behavior details — not end-user tips, but what the LLM relies on to
+use the tools correctly and what developers should understand.
+
+- **Sending messages / commands**
+  - Deliver text only: `herdr_agent_send` (does not press Enter)
+  - Also submit it: follow with `herdr_pane_send_keys` sending `enter`
+  - Run a shell command: `herdr_pane_run` (types **and** presses Enter) — simplest
+- **Reading output**: for context retrieval, `source: "visible"` most reliably
+  returns on-screen content. `recent` / `recent-unwrapped` can be empty when there
+  is no tracked command-output region.
+
+## Context & session sharing
+
+- **Context sharing**: pull another agent's output with `herdr_agent_read`, push to
+  it with `herdr_agent_send` / `herdr_pane_run`.
+- **Sessions**: all agents attached to the same herdr server already share one
+  session (socket) — that's the foundation context sharing relies on. Over MCP you
+  can observe/manage sessions (`session_list` / `stop` / `delete`). Human remote
+  `session attach` (SSH attach) is a native herdr feature and interactive, so it is
+  intentionally excluded from the MCP tools.
 
 ## Development
 

@@ -100,7 +100,48 @@ node dist/index.js          # run the server directly
 node dist/index.js install  # or run the installer from source
 ```
 
-## Tools
+## Usage — just talk to your agent
+
+You don't type tool names. Talk to your agent (Claude, Codex, …) in plain
+language; it decides when to call a herdr-mesh tool and reports back. The phrases
+below are examples of what to say and which capability they trigger.
+
+**See what's running**
+- "What agents are running in herdr right now?" → lists agents + status
+- "Which agent integrations does herdr support?" → integration status
+
+**Read another agent's context (handoff in)**
+- "Read the codex pane and summarize what it's working on."
+- "Grab the last 100 lines from the agent named *reviewer*."
+
+**Send a message / hand off work**
+- "Tell codex: 'please review the diff on this branch'."
+- "Ask the *reviewer* agent to run the tests and report back."
+- "Send `npm test` to pane w65343…-3 and run it." (executes with Enter)
+
+**Coordinate / wait**
+- "Wait until codex is idle, then send it the next task."
+- "Watch the build pane and tell me when it prints 'BUILD SUCCESS'."
+
+**Spawn / manage agents**
+- "Start a new codex agent in a split to the right and have it review my work."
+- "Open a new agent named *tester* running claude."
+
+**Sessions & workspace**
+- "List herdr sessions." / "Create a new workspace for the docs project."
+
+A typical handoff, all from natural language:
+
+> "Take my current changes, hand them to a fresh codex agent for review, wait
+> for it to finish, then summarize its feedback for me."
+
+The agent chains `herdr_agent_start` → `herdr_agent_send` → `herdr_agent_wait` →
+`herdr_agent_read` on its own.
+
+## Tools (reference for the LLM)
+
+These are the tool names exposed to the agent — listed here for reference, not for
+you to type.
 
 **Agent messaging & context (core)**
 - `herdr_agent_list` — list agents with state (idle/working/blocked/done)

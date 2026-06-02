@@ -30,33 +30,45 @@ MCP 클라이언트 ──stdio(MCP)──> herdr-mesh ──exec "herdr …"─
 - [herdr](https://herdr.dev) 설치 및 서버 실행 상태(`herdr status`가 `running` 표시).
   `herdr`가 `PATH`에 없으면 `HERDR_BIN` 환경변수로 경로를 지정하세요.
 
-## npx로 실행 (권장)
+## 설치 (권장)
 
-클론 없이 GitHub에서 바로 실행합니다. npx가 저장소를 받아오고 `prepare` 스크립트가 자동으로
-빌드합니다:
+전역 설치 후, 내장 설치 도우미가 에이전트를 감지해 자동 등록합니다:
 
 ```bash
-npx -y runchr-works/herdr-mesh
+npm i -g runchr-works/herdr-mesh
+herdr-mesh install
 ```
 
-## 클라이언트에 등록
+`herdr-mesh install`은 설치된 에이전트를 감지하고, 선택한 에이전트에 herdr-mesh를 등록합니다:
 
-각 에이전트(claude/codex/…)는 각자가 MCP 클라이언트입니다. 사용하는 에이전트마다 한 번씩
-herdr-mesh를 MCP 서버로 등록하세요. 같은 머신의 모든 에이전트는 동일한 herdr 소켓을 공유하므로
-서로를 인지하고 메시지를 주고받을 수 있습니다.
+- **Claude Code** — `claude mcp add -s user`로 등록
+- **Codex** — `~/.codex/config.toml`에 `[mcp_servers.herdr-mesh]` 추가
+- **opencode** — `~/.config/opencode/opencode.json`에 병합
+- 그 외 에이전트 — 붙여넣을 설정 스니펫을 정확히 출력
+
+**안전합니다**: 기존 설정은 파싱·병합하며(통째로 덮어쓰지 않음), 쓰기 전 `.bak` 백업을 만들고,
+재실행 시 이미 등록된 에이전트는 건너뜁니다. `herdr-mesh install -y`로 감지된 모든 에이전트에
+비대화형으로 등록할 수 있습니다.
+
+등록 후 에이전트를 재시작하면 herdr-mesh가 적용됩니다.
+
+## 수동 등록
+
+각 에이전트는 각자가 MCP 클라이언트입니다. 사용하는 에이전트마다 한 번씩 등록하세요. 같은
+머신의 모든 에이전트는 동일한 herdr 소켓을 공유하므로 서로를 인지하고 메시지를 주고받습니다.
+서버 명령은 (전역 설치 후) `herdr-mesh`입니다.
 
 Claude Code:
 
 ```bash
-claude mcp add herdr-mesh -- npx -y runchr-works/herdr-mesh
+claude mcp add -s user herdr-mesh herdr-mesh
 ```
 
 Codex (`~/.codex/config.toml`):
 
 ```toml
 [mcp_servers.herdr-mesh]
-command = "npx"
-args = ["-y", "runchr-works/herdr-mesh"]
+command = "herdr-mesh"
 ```
 
 일반 MCP 설정(stdio):
@@ -65,12 +77,14 @@ args = ["-y", "runchr-works/herdr-mesh"]
 {
   "mcpServers": {
     "herdr-mesh": {
-      "command": "npx",
-      "args": ["-y", "runchr-works/herdr-mesh"]
+      "command": "herdr-mesh"
     }
   }
 }
 ```
+
+> 전역 설치가 싫다면 `herdr-mesh` 대신 `npx -y runchr-works/herdr-mesh`를 명령으로 쓰세요
+> (npx가 첫 실행 시 GitHub에서 빌드 — 콜드 스타트가 느립니다).
 
 ## 소스에서 빌드 (로컬 개발)
 
@@ -79,7 +93,8 @@ git clone https://github.com/runchr-works/herdr-mesh.git
 cd herdr-mesh
 npm install
 npm run build
-# 등록: node /herdr-mesh/절대경로/dist/index.js
+node dist/index.js          # 서버 직접 실행
+node dist/index.js install  # 또는 소스에서 설치 도우미 실행
 ```
 
 ## Tool 목록

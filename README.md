@@ -30,33 +30,47 @@ protocol implementation — herdr's own version/protocol handling stays authorit
 - [herdr](https://herdr.dev) installed and a server running (`herdr status` shows `running`).
   Set `HERDR_BIN` if `herdr` is not on `PATH`.
 
-## Run with npx (recommended)
+## Install (recommended)
 
-No clone needed — run straight from GitHub. npx fetches the repo and its
-`prepare` script builds it automatically:
+Install globally, then let the built-in installer detect your agents and register
+herdr-mesh with them:
 
 ```bash
-npx -y runchr-works/herdr-mesh
+npm i -g runchr-works/herdr-mesh
+herdr-mesh install
 ```
 
-## Register with a client
+`herdr-mesh install` detects installed agents and registers herdr-mesh with the
+ones you pick:
 
-Each agent (claude/codex/…) is its own MCP client. Register herdr-mesh once per
-agent you use. All agents on the same machine share the same herdr socket, so
-they can see and message each other.
+- **Claude Code** — via `claude mcp add -s user`
+- **Codex** — adds `[mcp_servers.herdr-mesh]` to `~/.codex/config.toml`
+- **opencode** — merges into `~/.config/opencode/opencode.json`
+- Other agents — prints the exact config snippet to paste
+
+It is **safe**: existing config is parsed and merged (never overwritten), a `.bak`
+backup is made before writing, and re-running skips agents already registered.
+Use `herdr-mesh install -y` to register with all detected agents non-interactively.
+
+Restart the agent(s) afterward so they pick up herdr-mesh.
+
+## Manual registration
+
+Each agent is its own MCP client; register herdr-mesh once per agent. All agents
+on the same machine share the same herdr socket, so they can see and message each
+other. The server command is `herdr-mesh` (after a global install).
 
 Claude Code:
 
 ```bash
-claude mcp add herdr-mesh -- npx -y runchr-works/herdr-mesh
+claude mcp add -s user herdr-mesh herdr-mesh
 ```
 
 Codex (`~/.codex/config.toml`):
 
 ```toml
 [mcp_servers.herdr-mesh]
-command = "npx"
-args = ["-y", "runchr-works/herdr-mesh"]
+command = "herdr-mesh"
 ```
 
 Generic MCP config (stdio):
@@ -65,12 +79,15 @@ Generic MCP config (stdio):
 {
   "mcpServers": {
     "herdr-mesh": {
-      "command": "npx",
-      "args": ["-y", "runchr-works/herdr-mesh"]
+      "command": "herdr-mesh"
     }
   }
 }
 ```
+
+> Prefer not to install globally? Use `npx -y runchr-works/herdr-mesh` as the
+> command instead of `herdr-mesh` (npx builds it from GitHub on first run; slower
+> cold start).
 
 ## Build from source (local development)
 
@@ -79,7 +96,8 @@ git clone https://github.com/runchr-works/herdr-mesh.git
 cd herdr-mesh
 npm install
 npm run build
-# then register with: node /absolute/path/to/herdr-mesh/dist/index.js
+node dist/index.js          # run the server directly
+node dist/index.js install  # or run the installer from source
 ```
 
 ## Tools

@@ -237,10 +237,14 @@ These are the tool names exposed to the agent — listed here for reference, not
 you to type.
 
 **Agent messaging & context (core)**
+- `herdr_relay` — deliver a message to an agent **and submit it** (types + Enter).
+  Preferred for messaging; avoids the "typed but never submitted" pitfall.
+- `herdr_handoff` — send a task, wait for the agent to finish, and read its result
+  back — in one step. Preferred for review/fix/verify loops so the chain can't break.
 - `herdr_agent_list` — list agents with state (idle/working/blocked/done)
 - `herdr_agent_get` — agent details
 - `herdr_agent_read` — read another agent's pane output (context handoff)
-- `herdr_agent_send` — send literal text to an agent (no Enter)
+- `herdr_agent_send` — low-level: type literal text to an agent (no Enter)
 - `herdr_agent_wait` — block until an agent reaches a status
 - `herdr_wait_output` — block until a pane's output matches text/regex
 
@@ -282,6 +286,28 @@ use the tools correctly and what developers should understand.
   can observe/manage sessions (`session_list` / `stop` / `delete`). Human remote
   `session attach` (SSH attach) is a native herdr feature and interactive, so it is
   intentionally excluded from the MCP tools.
+
+## Troubleshooting
+
+Natural-language requests usually work, but the agent (an LLM) ultimately decides
+whether and how to call the tools, so it isn't 100% deterministic. If something
+doesn't happen:
+
+- **The agent answered without acting.** Be explicit: name the capability, e.g.
+  "use herdr-mesh to message codex" or "call the herdr tools to do this".
+- **A message was sent but nothing ran.** `herdr_agent_send` types without Enter.
+  Ask to "send it **and run it**", or rely on `herdr_relay` / `herdr_handoff`,
+  which submit for you.
+- **Wrong or missing target.** Tell it to "list the agents first", then refer to
+  one by the name/id from that list.
+- **Read came back empty.** Ask for output "from what's **on screen** now"
+  (`source: visible`); tracked "recent" output can be empty.
+- **A multi-step handoff stalled midway.** Use `herdr_handoff` (send + wait + read
+  in one tool) instead of asking the agent to chain several calls itself.
+- **Tools not available at all.** Check the server is connected: `claude mcp list`
+  or `/mcp` inside the session. Confirm herdr is up with `herdr status`.
+- **Still stuck?** Errors are returned verbatim from herdr, so ask the agent to
+  "show the exact error it got" — it usually names the cause (e.g. `agent_not_found`).
 
 ## Development
 

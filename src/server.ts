@@ -5,8 +5,10 @@ import { sessionTools } from "./tools/session.js";
 import { paneTools } from "./tools/pane.js";
 import { tabTools, workspaceTools } from "./tools/workspace.js";
 import { integrationTools } from "./tools/integration.js";
+import { compositeTools } from "./tools/composite.js";
 
 const allTools: ToolDef[] = [
+  ...compositeTools,
   ...agentTools,
   ...sessionTools,
   ...paneTools,

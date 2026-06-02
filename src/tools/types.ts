@@ -5,8 +5,10 @@ export interface ToolDef {
   name: string;
   description: string;
   inputSchema: ZodRawShape;
-  /** Build the herdr CLI argv from validated args. */
-  buildArgs: (args: Record<string, unknown>) => string[];
+  /** Build the herdr CLI argv from validated args (single-command tools). */
+  buildArgs?: (args: Record<string, unknown>) => string[];
+  /** Custom multi-step handler (composite tools). Takes precedence over buildArgs. */
+  run?: (args: Record<string, unknown>) => Promise<ToolResult>;
   /** Optional per-tool timeout (ms); falls back to runHerdr default. */
   timeoutMs?: number;
 }
@@ -17,21 +19,28 @@ export interface ToolResult {
   isError?: boolean;
 }
 
-/** Execute a ToolDef: build argv, run herdr, format result as MCP content. */
+/** Wrap arbitrary text as a successful tool result. */
+export function ok(text: string): ToolResult {
+  return { content: [{ type: "text", text: text || "(no output)" }] };
+}
+
+/** Format a herdr result (parsed JSON if available, else raw stdout). */
+export function formatResult(result: { json?: unknown; stdout: string }): string {
+  return result.json !== undefined
+    ? JSON.stringify(result.json, null, 2)
+    : result.stdout.trim() || "(no output)";
+}
+
+/** Execute a ToolDef: run custom handler, or build argv + run herdr. */
 export async function execTool(
   tool: ToolDef,
   args: Record<string, unknown>,
 ): Promise<ToolResult> {
   try {
-    const argv = tool.buildArgs(args);
+    if (tool.run) return await tool.run(args);
+    const argv = tool.buildArgs!(args);
     const result = await runHerdr(argv, { timeoutMs: tool.timeoutMs });
-    // Prefer parsed JSON (pretty-printed) so the agent gets structured output;
-    // fall back to raw stdout for plain-text commands like `status`.
-    const text =
-      result.json !== undefined
-        ? JSON.stringify(result.json, null, 2)
-        : result.stdout.trim() || "(no output)";
-    return { content: [{ type: "text", text }] };
+    return ok(formatResult(result));
   } catch (err) {
     const message = err instanceof HerdrError ? err.message : String(err);
     return { content: [{ type: "text", text: message }], isError: true };

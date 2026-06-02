@@ -25,7 +25,7 @@ export const agentTools: ToolDef[] = [
   {
     name: "herdr_agent_read",
     description:
-      "Read another agent's terminal output to gather context (contextual handoff). Returns recent pane text. Keep `lines` small to avoid flooding context.",
+      "Read another agent's terminal output to gather context (contextual handoff). Defaults to the visible screen, which is the most reliable source. Keep `lines` small to avoid flooding context. To find valid targets first, call `herdr_agent_list`.",
     inputSchema: {
       target: targetSchema,
       source: sourceSchema,
@@ -39,7 +39,7 @@ export const agentTools: ToolDef[] = [
     },
     buildArgs: (a) => {
       const argv = ["agent", "read", String(a.target)];
-      flag(argv, "--source", a.source);
+      flag(argv, "--source", a.source ?? "visible");
       flag(argv, "--lines", a.lines ?? 200);
       argv.push("--format", "text");
       return argv;
@@ -48,7 +48,7 @@ export const agentTools: ToolDef[] = [
   {
     name: "herdr_agent_send",
     description:
-      "Send literal text to an agent (e.g. a message or prompt). Writes the text WITHOUT a trailing Enter — use herdr_pane_run if you need to submit a command. Core primitive for agent-to-agent messaging.",
+      "Low-level: write literal text to an agent WITHOUT pressing Enter (the text is typed but not submitted). For normal agent-to-agent messaging prefer `herdr_relay` (types + Enter) or `herdr_handoff` (send + wait + read). First call `herdr_agent_list` if you're unsure of the target.",
     inputSchema: {
       target: targetSchema,
       text: z.string().describe("Literal text to deliver to the agent."),

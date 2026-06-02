@@ -115,9 +115,9 @@ npm i -g runchr-works/herdr-mesh
 herdr-mesh install
 ```
 
-> npm 레지스트리가 아니라 **GitHub에서 직접 설치**합니다. npm이 repo를 클론하고 `prepare`
-> 스크립트가 설치 시 빌드하므로 `git`, 네트워크, Node 툴체인이 필요합니다. 나중에 업데이트하려면
-> 같은 `npm i -g` 명령을 다시 실행하세요.
+> npm 레지스트리가 아니라 **GitHub에서 직접 설치**합니다. repo에 빌드된 `dist/`가 포함돼 있어
+> 설치에는 `git`과 네트워크만 있으면 되고 별도 빌드 단계가 없습니다. 나중에 업데이트하려면 같은
+> `npm i -g` 명령을 다시 실행하세요.
 
 `herdr-mesh install`은 설치된 에이전트를 감지하고, 선택한 에이전트에 herdr-mesh를 등록합니다:
 
@@ -164,7 +164,7 @@ command = "herdr-mesh"
 ```
 
 > 전역 설치가 싫다면 `herdr-mesh` 대신 `npx -y runchr-works/herdr-mesh`를 명령으로 쓰세요
-> (npx가 첫 실행 시 GitHub에서 빌드 — 콜드 스타트가 느립니다).
+> (npx가 GitHub에서 빌드된 repo를 받아옵니다 — 첫 실행은 다운로드로 조금 느립니다).
 
 ## 소스에서 빌드 (로컬 개발)
 
@@ -297,8 +297,12 @@ tool 이름을 직접 입력하지 않습니다. 평소처럼 에이전트(Claud
 ## 개발
 
 ```bash
-npm run dev   # tsx로 소스에서 바로 실행
+npm run dev    # tsx로 소스에서 바로 실행
+npm run build  # dist/로 컴파일
 ```
+
+> `dist/`는 커밋되어 있어 GitHub에서 빌드 단계 없이 설치됩니다. `src/`를 수정한 뒤에는
+> `npm run build`를 실행하고 `dist/`도 함께 커밋하세요.
 
 ## 라이선스
 

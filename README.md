@@ -122,9 +122,9 @@ npm i -g runchr-works/herdr-mesh
 herdr-mesh install
 ```
 
-> Installed straight from GitHub (not the npm registry). npm clones the repo and
-> its `prepare` script builds it on install, so you need `git`, network access,
-> and a Node toolchain. To update later, re-run the same `npm i -g` command.
+> Installed straight from GitHub (not the npm registry). The repo ships a prebuilt
+> `dist/`, so install needs only `git` and network access — no build step. To
+> update later, re-run the same `npm i -g` command.
 
 `herdr-mesh install` detects installed agents and registers herdr-mesh with the
 ones you pick:
@@ -172,8 +172,8 @@ Generic MCP config (stdio):
 ```
 
 > Prefer not to install globally? Use `npx -y runchr-works/herdr-mesh` as the
-> command instead of `herdr-mesh` (npx builds it from GitHub on first run; slower
-> cold start).
+> command instead of `herdr-mesh` (npx fetches the prebuilt repo from GitHub;
+> first run is slower while it downloads).
 
 ## Build from source (local development)
 
@@ -312,8 +312,12 @@ doesn't happen:
 ## Development
 
 ```bash
-npm run dev   # run from source via tsx
+npm run dev    # run from source via tsx
+npm run build  # compile to dist/
 ```
+
+> `dist/` is committed so the package installs from GitHub without a build step.
+> After changing anything under `src/`, run `npm run build` and commit `dist/` too.
 
 ## License
 

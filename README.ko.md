@@ -21,6 +21,40 @@ herdr-mesh는 그 간극을 메웁니다: herdr의 CLI를 **MCP tool**로 노출
 멀티 에이전트 워크플로를 **에이전트 자신이** 하나의 표준·에이전트 비종속 인터페이스로
 프로그래밍할 수 있게 만드는 것입니다.
 
+## 유즈케이스
+
+터미널을 오가는 번거로운 작업을 한 문장의 자연어 지시로 바꾸는 구체적 상황들입니다.
+
+### 1. 코딩 → 리뷰 → 수정 루프
+
+Claude에게 코딩을 시키고 Codex에게 리뷰를 맡깁니다. Codex가 버그를 발견했습니다 — 보통은
+그걸 사람이 직접 Claude에게 복사해 넘겨야 하죠. 대신:
+
+> "Codex한테 방금 Claude가 한 변경을 리뷰시켜. 문제를 찾으면 Claude한테 보내서 고치게 하고,
+> 다시 Codex에게 재리뷰시켜. 깨끗해질 때까지 반복해."
+
+조율 에이전트가 `herdr_agent_read`(Codex 리뷰 회수) → `herdr_agent_send`(지적사항을 Claude에게
+전달) → `herdr_agent_wait`(Claude 작업 완료 대기) → 리뷰 반복을 스스로 돌립니다. pane 간
+복사·붙여넣기가 사라집니다.
+
+### 2. 병렬 분담
+
+> "이 리팩터를 나눠줘: API 레이어는 Claude, 테스트는 Codex가 맡게 하고, 둘 결과를 모아서
+> 요약해줘."
+
+`herdr_agent_start` / `herdr_agent_send`로 두 에이전트에 작업을 분배하고, 각각
+`herdr_agent_wait`로 기다린 뒤, `herdr_agent_read`로 결과를 합칩니다.
+
+### 3. 롱러닝 작업 핸드백
+
+> "빌드 에이전트한테 전체 테스트 돌리게 하고, PASS나 FAIL 뜰 때까지 기다렸다가 실패 케이스
+> 가져와줘."
+
+`herdr_pane_run`으로 실행을 시작하고 `herdr_wait_output`으로 결과를 기다립니다 — pane을 계속
+지켜볼 필요 없이 끝나는 순간 알려줍니다.
+
+요점: **사람이 중간에 끼어야 했던 에이전트 간 핸드오프가 한 문장이 됩니다.**
+
 herdr는 자신의 워크스페이스/에이전트 런타임을 CLI + 소켓 API로 노출합니다. `herdr-mesh`는
 그 CLI를 [Model Context Protocol](https://modelcontextprotocol.io) tool로 감싸므로, 어떤
 MCP 클라이언트든 다른 에이전트의 pane을 읽고, 메시지를 보내고, 세션을 조회하고, 새

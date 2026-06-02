@@ -22,6 +22,42 @@ context, coordinate, and spawn new agents **on its own, from plain-language
 instructions.** The goal is to make herdr's multi-agent workflow programmable by
 the agents themselves, through one standard, agent-agnostic interface.
 
+## Use cases
+
+Concrete situations where herdr-mesh turns tedious terminal-shuffling into a
+single natural-language instruction.
+
+### 1. Code → review → fix loop
+
+You have Claude writing code and Codex reviewing it. Codex finds a bug — normally
+you'd copy it over to Claude by hand. Instead:
+
+> "Have Codex review the changes Claude just made. If it finds problems, send them
+> to Claude to fix, then ask Codex to re-review. Repeat until it's clean."
+
+The orchestrating agent uses `herdr_agent_read` (pull Codex's review) →
+`herdr_agent_send` (hand the findings to Claude) → `herdr_agent_wait` (let Claude
+finish) → and loops the review. No copy-paste between panes.
+
+### 2. Parallel fan-out
+
+> "Split this refactor: have Claude do the API layer and Codex do the tests, then
+> collect both results and summarize."
+
+Spawns/targets two agents with `herdr_agent_start` / `herdr_agent_send`, waits on
+each with `herdr_agent_wait`, and merges their output with `herdr_agent_read`.
+
+### 3. Long-running handback
+
+> "Tell the build agent to run the full test suite, wait until it prints PASS or
+> FAIL, and bring me the failing cases."
+
+Uses `herdr_pane_run` to kick off the run and `herdr_wait_output` to block on the
+result — so you're notified the moment it's done instead of babysitting the pane.
+
+The point: the agent-to-agent handoffs that used to need a human in the middle
+become one sentence.
+
 herdr already exposes its workspace/agent runtime over a CLI + socket API. `herdr-mesh`
 wraps that CLI as [Model Context Protocol](https://modelcontextprotocol.io) tools, so any
 MCP client can read other agents' panes, send messages, share sessions, and spawn new

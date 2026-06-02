@@ -118,13 +118,18 @@ Install globally, then let the built-in installer detect your agents and registe
 herdr-mesh with them:
 
 ```bash
-npm i -g runchr-works/herdr-mesh
+npm i -g https://github.com/runchr-works/herdr-mesh/archive/refs/heads/main.tar.gz
 herdr-mesh install
 ```
 
 > Installed straight from GitHub (not the npm registry). The repo ships a prebuilt
-> `dist/`, so install needs only `git` and network access — no build step. To
-> update later, re-run the same `npm i -g` command.
+> `dist/`, so install needs only network access — no build step. To update later,
+> re-run the same command.
+>
+> The shorter `npm i -g runchr-works/herdr-mesh` also works on npm setups that
+> handle git installs cleanly; if it doesn't create a working `herdr-mesh` command,
+> use the tarball URL above. Don't want a global install at all? See
+> [Manual registration](#manual-registration) — `npx` works without one.
 
 `herdr-mesh install` detects installed agents and registers herdr-mesh with the
 ones you pick:

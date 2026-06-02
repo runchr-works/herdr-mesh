@@ -111,13 +111,17 @@ MCP 클라이언트 ──stdio(MCP)──> herdr-mesh ──exec "herdr …"─
 전역 설치 후, 내장 설치 도우미가 에이전트를 감지해 자동 등록합니다:
 
 ```bash
-npm i -g runchr-works/herdr-mesh
+npm i -g https://github.com/runchr-works/herdr-mesh/archive/refs/heads/main.tar.gz
 herdr-mesh install
 ```
 
 > npm 레지스트리가 아니라 **GitHub에서 직접 설치**합니다. repo에 빌드된 `dist/`가 포함돼 있어
-> 설치에는 `git`과 네트워크만 있으면 되고 별도 빌드 단계가 없습니다. 나중에 업데이트하려면 같은
-> `npm i -g` 명령을 다시 실행하세요.
+> 설치에는 네트워크만 있으면 되고 별도 빌드 단계가 없습니다. 나중에 업데이트하려면 같은 명령을
+> 다시 실행하세요.
+>
+> git 설치를 깔끔히 처리하는 npm 환경에서는 더 짧은 `npm i -g runchr-works/herdr-mesh`도
+> 됩니다. 이게 `herdr-mesh` 명령을 못 만들면 위의 tarball URL을 쓰세요. 전역 설치 자체가 싫다면
+> [수동 등록](#수동-등록)을 보세요 — `npx`는 전역 설치 없이 동작합니다.
 
 `herdr-mesh install`은 설치된 에이전트를 감지하고, 선택한 에이전트에 herdr-mesh를 등록합니다:
 

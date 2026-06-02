@@ -5,6 +5,23 @@ enabling real-time communication, pane management, and contextual handoffs.
 
 > 한국어: [README.ko.md](./README.ko.md)
 
+## Why this exists
+
+herdr already has everything needed to orchestrate multiple agents — real panes,
+persistent sessions, semantic agent state (idle/working/blocked/done), and a CLI +
+socket API to drive it all. What it lacked was a **standard interface for agents
+themselves to use it.**
+
+So when you run several agents inside herdr (Claude, Codex, …), there was no clean
+way for them to read each other's context, share a session, or pass messages
+without a human shuffling between terminals.
+
+herdr-mesh closes that gap: it exposes herdr's CLI as **MCP tools**, so any
+MCP-capable agent — regardless of type — can read other agents' panes, hand off
+context, coordinate, and spawn new agents **on its own, from plain-language
+instructions.** The goal is to make herdr's multi-agent workflow programmable by
+the agents themselves, through one standard, agent-agnostic interface.
+
 herdr already exposes its workspace/agent runtime over a CLI + socket API. `herdr-mesh`
 wraps that CLI as [Model Context Protocol](https://modelcontextprotocol.io) tools, so any
 MCP client can read other agents' panes, send messages, share sessions, and spawn new
